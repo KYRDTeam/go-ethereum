@@ -193,13 +193,10 @@ func (c *Client) decodeRespBody(body []byte) ([]*jsonrpcMessage, error) {
 		return respmsgs, nil
 	}
 	var respmsg jsonrpcMessage
-	if err := json.Unmarshal(body, &respmsg); err != nil {
-		return nil, err
-	}
-	if respmsg.Error != nil {
+	if err := json.Unmarshal(body, &respmsg); err == nil {
 		return nil, respmsg.Error
 	}
-	return []*jsonrpcMessage{&respmsg}, nil
+	return nil, fmt.Errorf("cannot unmarshal body into []*jsonrpcMessage or *jsonrpcMessage. body: %s", string(body))
 }
 
 func (hc *httpConn) doRequest(ctx context.Context, msg interface{}) (io.ReadCloser, error) {
