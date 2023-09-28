@@ -192,14 +192,14 @@ func (c *Client) sendBatchHTTP(ctx context.Context, op *requestOp, msgs []*jsonr
 		return err
 	}
 	defer respBody.Close()
-  body, err := io.ReadAll(respBody)
-  if err != nil {
-    return err
-  }
-  respmsgs, err := c.decodeRespBody(body)
-  if err != nil {
-    return err
-  }
+	body, err := io.ReadAll(respBody)
+	if err != nil {
+		return err
+	}
+	respmsgs, err := c.decodeRespBody(body)
+	if err != nil {
+		return err
+	}
 
 	op.resp <- respmsgs
 	return nil
@@ -211,10 +211,10 @@ func (c *Client) decodeRespBody(body []byte) ([]*jsonrpcMessage, error) {
 		return respmsgs, nil
 	}
 	var respmsg jsonrpcMessage
-	if err := json.Unmarshal(body, &respmsg); err != nil {
-		return nil, err
+	if err := json.Unmarshal(body, &respmsg); err == nil {
+		return nil, respmsg.Error
 	}
-	return []*jsonrpcMessage{&respmsg}, nil
+	return nil, fmt.Errorf("cannot unmarshal body into []*jsonrpcMessage or *jsonrpcMessage. body: %s", string(body))
 }
 
 func (hc *httpConn) doRequest(ctx context.Context, msg interface{}) (io.ReadCloser, error) {
