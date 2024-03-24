@@ -93,6 +93,9 @@ type Header struct {
 
 	// ParentBeaconRoot was added by EIP-4788 and is ignored in legacy headers.
 	ParentBeaconRoot *common.Hash `json:"parentBeaconBlockRoot" rlp:"optional"`
+
+	// BlockHash as returned from rpc-call
+	RpcHash common.Hash `json:"hash" rlp:"optional"`
 }
 
 // field type overrides for gencodec
