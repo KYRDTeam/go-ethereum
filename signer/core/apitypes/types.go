@@ -355,6 +355,10 @@ func (typedData *TypedData) EncodeData(primaryType string, data map[string]inter
 	for _, field := range typedData.Types[primaryType] {
 		encType := field.Type
 		encValue := data[field.Name]
+    if encValue == nil {
+      buffer.Write(common.Hash{}.Bytes())
+			continue
+    }
 		if encType[len(encType)-1:] == "]" {
 			arrayValue, err := convertDataToSlice(encValue)
 			if err != nil {
